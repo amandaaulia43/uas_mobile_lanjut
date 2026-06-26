@@ -1,17 +1,16 @@
 import java.net.URLDecoder
 
-// Kode untuk membaca variabel --dart-define dari Flutter
-def dartEnvironmentVariables = []
-if (project.hasProperty('dart-defines')) {
-    dartEnvironmentVariables = project.property('dart-defines').split(',').collect {
-        URLDecoder.decode(it, "UTF-8")
-    }
-}
+// Membaca dart-defines dengan format Kotlin DSL
+val dartEnvironmentVariables = project.providers.gradleProperty("dart-defines")
+    .orNull
+    ?.split(",")
+    ?.map { URLDecoder.decode(it, "UTF-8") }
+    ?: emptyList()
 
-def appNameDef = "DEV - Amanda"
-dartEnvironmentVariables.each { defKeyValue ->
-    def pair = defKeyValue.split('=')
-    if (pair.length == 2 && pair[0] == 'APP_NAME') {
+var appNameDef = "DEV - Amanda"
+dartEnvironmentVariables.forEach { defKeyValue ->
+    val pair = defKeyValue.split("=")
+    if (pair.size == 2 && pair[0] == "APP_NAME") {
         appNameDef = pair[1]
     }
 }
@@ -47,8 +46,8 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // TAMBAHKAN BARIS INI: Meneruskan nama aplikasi ke Manifest Android
-        resValue "string", "app_name", appNameDef
+        // Memasukkan nama aplikasi dinamis di format Kotlin DSL
+        resValue("string", "app_name", appNameDef)
     }
 
     buildTypes {
