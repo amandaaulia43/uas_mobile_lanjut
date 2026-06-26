@@ -1,3 +1,21 @@
+import java.net.URLDecoder
+
+// Kode untuk membaca variabel --dart-define dari Flutter
+def dartEnvironmentVariables = []
+if (project.hasProperty('dart-defines')) {
+    dartEnvironmentVariables = project.property('dart-defines').split(',').collect {
+        URLDecoder.decode(it, "UTF-8")
+    }
+}
+
+def appNameDef = "DEV - Amanda"
+dartEnvironmentVariables.each { defKeyValue ->
+    def pair = defKeyValue.split('=')
+    if (pair.length == 2 && pair[0] == 'APP_NAME') {
+        appNameDef = pair[1]
+    }
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -28,6 +46,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // TAMBAHKAN BARIS INI: Meneruskan nama aplikasi ke Manifest Android
+        resValue "string", "app_name", appNameDef
     }
 
     buildTypes {
