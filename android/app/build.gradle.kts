@@ -7,7 +7,7 @@ val dartEnvironmentVariables = project.providers.gradleProperty("dart-defines")
     ?.map { URLDecoder.decode(it, "UTF-8") }
     ?: emptyList()
 
-var appNameDef = "DEV - Amanda"
+var appNameDef = "UTD - 20123043"
 dartEnvironmentVariables.forEach { defKeyValue ->
     val pair = defKeyValue.split("=")
     if (pair.size == 2 && pair[0] == "APP_NAME") {
